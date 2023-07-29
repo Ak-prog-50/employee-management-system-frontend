@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SignInContainer from "./containers/SignInPage";
 import { Box } from "@chakra-ui/react";
-import Home from "./containers/Home";
+import Dashboard from "./containers/Dashboard";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ const App: React.FC = () => {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/signIn" element={<SignInContainer />} />{" "}
         </Routes>
       </Router>

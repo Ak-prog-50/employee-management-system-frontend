@@ -13,8 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
+interface SignInFormProps {
+  onSubmit: {
+    handleLogin: any;
+    handleReg: any;
+  };
 }
 
 function PasswordInput({
@@ -60,7 +63,7 @@ function PasswordInput({
   );
 }
 
-const SignInForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const SignInForm: React.FC<SignInFormProps> = ({ onSubmit }) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [logInDetails, setLogInDetails] = useState({
     email: "",
@@ -74,8 +77,13 @@ const SignInForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     dob: "",
     email: "",
     designation: "",
-    appointedDate: ""
+    appointedDate: "",
   });
+  const onSubmitFunc = isRegistering
+    ? onSubmit.handleReg
+    : onSubmit.handleLogin;
+  const onSubmitDetails = isRegistering ? regDetails : logInDetails;
+  const onSubmitText = isRegistering ? "Create Account" : "Sign In";
 
   return (
     <Flex
@@ -85,7 +93,9 @@ const SignInForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       justifyContent={"center"}
       minH={"100vh"}
     >
-      <Heading as="h1" size="lg" mb={4}>Micro Credit Investments</Heading>
+      <Heading as="h1" size="lg" mb={4}>
+        Micro Credit Investments
+      </Heading>
       <VStack
         p={8}
         maxW={"md"}
@@ -232,7 +242,9 @@ const SignInForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
               Already a User? Sign In
             </Button>
           )}
-          <Button>{isRegistering ? "Create Account" : "Sign In"}</Button>
+          <Button onClick={() => onSubmitFunc(onSubmitDetails)}>
+            {onSubmitText}
+          </Button>
         </HStack>
       </VStack>
     </Flex>
