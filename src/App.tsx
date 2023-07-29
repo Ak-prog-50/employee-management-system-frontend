@@ -1,25 +1,25 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import LoginContainer from "./containers/LoginPage";
-import RegisterContainer from "./containers/RegisterPage";
+import SignInContainer from "./containers/SignInPage";
+import { Box } from "@chakra-ui/react";
+import Home from "./containers/Home";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-        </ul>
-      </nav>
-      <Routes>
-        <Route path="/login" element={<LoginContainer />} />
-        <Route path="/register" element={<RegisterContainer />} />
-      </Routes>
-    </Router>
+    <Box p={4}>
+      <Router>
+        <nav>
+          <ul>
+            {/* <li>
+              <Link to="/signIn">Sign In</Link>
+            </li> */}
+          </ul>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signIn" element={<SignInContainer />} />{" "}
+        </Routes>
+      </Router>
+    </Box>
   );
 };
 

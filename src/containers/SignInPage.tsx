@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Heading } from "@chakra-ui/react";
-import LoginForm from "../components/LoginForm";
+import SignInForm from "../components/SignInForm";
 
-const LoginContainer: React.FC = () => {
+const SignInContainer: React.FC = () => {
   const handleLogin = (email: string, password: string) => {
     // Implement your login logic here using API calls or any other method
     console.log("Logging in with email:", email, "and password:", password);
@@ -10,12 +10,12 @@ const LoginContainer: React.FC = () => {
 
   return (
     <Box>
-      <Heading as="h1" size="xl" mb={4}>
+      {/* <Heading as="h1" size="xl" mb={4}>
         Micro Credit Investments
-      </Heading>
-      <LoginForm onSubmit={handleLogin} />
+      </Heading> */}
+      <SignInForm onSubmit={handleLogin} />
     </Box>
   );
 };
 
-export default LoginContainer;
+export default SignInContainer;
