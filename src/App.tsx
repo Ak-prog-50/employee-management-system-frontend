@@ -3,6 +3,7 @@ import SignInContainer from "./containers/SignInPage";
 import { Box } from "@chakra-ui/react";
 import Dashboard from "./containers/Dashboard";
 import Leaves from "./containers/Dashboard/Leaves";
+import ReviewRegistrationReq from "./containers/ReviewRegistrationReq";
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/signIn" element={<SignInContainer />} />{" "}
           <Route path="/leaves" element={<Leaves />} />{" "}
+          <Route path="/Review Registrations" element={<ReviewRegistrationReq />} />{" "}
         </Routes>
       </Router>
     </Box>
