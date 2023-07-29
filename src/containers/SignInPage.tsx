@@ -66,7 +66,7 @@ const SignInContainer: React.FC = () => {
 
   const handleRegistration = async (regDetails: RegistrantDetails) => {
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/user/create-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

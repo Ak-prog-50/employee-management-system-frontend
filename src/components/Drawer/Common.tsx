@@ -8,14 +8,20 @@ import {
   BiFileBlank,
   BiCommentDetail,
 } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 const CommonSection: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Button leftIcon={<AiFillDashboard />} variant="ghost">
         Dashboard
       </Button>
-      <Button leftIcon={<BiCalendarCheck />} variant="ghost">
+      <Button
+        leftIcon={<BiCalendarCheck />}
+        variant="ghost"
+        onClick={() => navigate("/leaves")}
+      >
         Leaves
       </Button>
       <Button leftIcon={<BiTimeFive />} variant="ghost">
