@@ -1,44 +1,95 @@
 import React from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import SignInForm from "../components/SignInForm";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 const SignInContainer: React.FC = () => {
   const navigate = useNavigate();
-  const handleLogin = (loginDetails: any) => {
-    // Call the backend API to perform login with logInDetails.email and logInDetails.password
-    // For now, let's assume login is successful and we get the user data from the backend
-    const user = {
-      name: "John Doe",
-      role: "employee", // Replace this with the actual role received from the backend
-      // Add other user data here if needed
-    };
 
-    // Save the user object to localStorage
-    localStorage.setItem("user", JSON.stringify(user));
+  const handleLogin = async (loginDetails: {
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginDetails),
+      });
 
-    // Perform any additional actions or navigation after successful login
-    // For example, redirect the user to the dashboard page
-    // You can use React Router for navigation
-    navigate('/')
+      const data = await response.json();
+
+      if (response.ok) {
+        const user = {
+          empId: data.data.empId,
+          name: data.data.name,
+          contactNo: data.data.contactNo,
+          email: data.data.email,
+          designation: data.data.designation,
+          address: data.data.address,
+          dob: data.data.dob,
+          appDate: data.data.appDate,
+          role: data.data.role,
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/");
+      } else {
+        const errorData = JSON.parse(data.message);
+
+        if (errorData.message === "Incorrect email!") {
+          alert("Incorrect email");
+        } else if (errorData.message === "Incorrect password!") {
+          alert("Incorrect password");
+        } else {
+          alert("Login failed due to an error");
+        }
+      }
+    } catch (error) {
+      console.error("login failed", error);
+      alert("Login failed");
+    }
   };
 
-  const handleRegistration = (regDetails: any) => {
-    // Call the backend API to perform registration with regDetails object
-    // For now, let's assume registration is successful and we get the user data from the backend
-    const user = {
-      name: `${regDetails.firstName} ${regDetails.lastName}`,
-      role: "employee", // Replace this with the actual role received from the backend
-      // Add other user data here if needed
-    };
+  interface RegistrantDetails {
+    name: string;
+    contactNo: string;
+    email: string;
+    designation: string;
+    address: string;
+    dob: string;
+    appDate: string;
+  }
 
-    // Save the user object to localStorage
-    localStorage.setItem("user", JSON.stringify(user));
+  const handleRegistration = async (regDetails: RegistrantDetails) => {
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          empIdOfCaller: null,
+          registrantDetails: regDetails,
+        }),
+      });
 
-    // Perform any additional actions or navigation after successful registration
-    // For example, redirect the user to the dashboard page
-    // You can use React Router for navigation
-    navigate('/')
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Registration Request Sent! Please wait for approval.")
+      } else {
+        // Registration failed, handle error cases
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Registration failed due to an error", error);
+      alert("Registration failed");
+    }
+    
   };
 
   return (
