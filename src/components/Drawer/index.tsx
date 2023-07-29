@@ -8,8 +8,8 @@ import {
   HStack,
   Icon,
   DrawerFooter,
-  IconButton,
   VStack,
+  Button,
 } from "@chakra-ui/react";
 import { AiOutlineUser } from "react-icons/ai";
 import CommonSection from "./Common";
@@ -31,7 +31,15 @@ const SideDrawer = ({ userRole, onClose, isOpen }: ISideDrawerProps) => {
     <>
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent
+          sx={{
+            "& button": {
+              width: "full",
+              textAlign: "left",
+              display: "block"
+            },
+          }}
+        >
           <DrawerHeader borderBottomWidth={"1px"}>
             {/* Display user's name or other information here */}
             <HStack spacing={2}>
@@ -48,23 +56,15 @@ const SideDrawer = ({ userRole, onClose, isOpen }: ISideDrawerProps) => {
             {userRole === "hrPerson" && <HRSection />}
           </DrawerBody>
           <DrawerFooter mr={"auto"}>
-            <VStack alignItems={"left"}>
-              <HStack as={"button"}>
-                <IconButton
-                  aria-label="Time Sheets"
-                  icon={<AiOutlineSetting />}
-                  variant="ghost"
-                />
-                <Text> Edit Profile </Text>
-              </HStack>
-              <HStack as={"button"}>
-                <IconButton
-                  aria-label="Time Sheets"
-                  icon={<AiOutlineLogout />}
-                  variant="ghost"
-                />
-                <Text> Log Out </Text>
-              </HStack>
+            <VStack>
+              <>
+                <Button leftIcon={<AiOutlineSetting />} variant="ghost">
+                  Edit Profile
+                </Button>
+                <Button leftIcon={<AiOutlineLogout />} variant="ghost">
+                  Log Out
+                </Button>
+              </>
             </VStack>
           </DrawerFooter>
         </DrawerContent>
