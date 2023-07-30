@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
+import { MdOutlineRateReview } from "react-icons/md";
 
 const HRSection: React.FC = () => {
   const naviagte = useNavigate();
@@ -12,6 +13,13 @@ const HRSection: React.FC = () => {
         onClick={() => naviagte("/review-registrations")}
       >
         Review Registration Requests
+      </Button>
+      <Button
+        leftIcon={<MdOutlineRateReview />}
+        variant="ghost"
+        onClick={() => naviagte("/create-schedules")}
+      >
+        Create Schedules
       </Button>
     </>
   );
