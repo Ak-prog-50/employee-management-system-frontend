@@ -14,6 +14,8 @@ import { BsMenuButtonWide } from "react-icons/bs";
 const Dashboard: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
+  const user = localStorage.getItem("user");
+  const parsedUser = user ? JSON.parse(user) : null;
 
   // Replace 'manager' with the actual role received from the backend
   const navigate = useNavigate();
@@ -55,7 +57,7 @@ const Dashboard: React.FC = () => {
         </Heading>
         <Spacer />
 
-        <SideDrawer userRole="manager" isOpen={isOpen} onClose={onClose} />
+        <SideDrawer userRole={parsedUser?.role} isOpen={isOpen} onClose={onClose} />
       </HStack>
     </Box>
   );
