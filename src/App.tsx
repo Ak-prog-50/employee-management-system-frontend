@@ -8,6 +8,7 @@ import ReviewLeaves from "./containers/ReviewLeaves";
 import TimeSheets from "./containers/TimeSheets";
 import ReviewTimeSheets from "./containers/ReviewTimeSheets";
 import Schedules from "./containers/Schedules";
+import ReviewSchedules from "./containers/ReviewSchedules";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
           <Route path="/timesheets" element={<TimeSheets />} />
           <Route path="/review-timesheets" element={<ReviewTimeSheets />} />
           <Route path="/schedules" element={<Schedules />} />
+          <Route path="/review-schedules" element={<ReviewSchedules />} />
         </Routes>
       </Router>
     </Box>

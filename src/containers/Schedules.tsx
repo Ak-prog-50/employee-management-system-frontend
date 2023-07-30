@@ -19,7 +19,7 @@ import {
 import { BACKEND_URL } from "../config";
 import { toastAlertErr, toastAlertSuccess } from "../utils";
 
-interface ISchedule {
+export interface ISchedule {
   scheduleId: number;
   empId: number;
   scheduledDate: string;
