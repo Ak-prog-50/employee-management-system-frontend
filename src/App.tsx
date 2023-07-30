@@ -4,6 +4,7 @@ import { Box } from "@chakra-ui/react";
 import Dashboard from "./containers/Dashboard";
 import Leaves from "./containers/Dashboard/Leaves";
 import ReviewRegistrationReq from "./containers/ReviewRegistrationReq";
+import ReviewLeaves from "./containers/ReviewLeaves";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Route path="/signIn" element={<SignInContainer />} />{" "}
           <Route path="/leaves" element={<Leaves />} />{" "}
           <Route path="/review-registrations" element={<ReviewRegistrationReq />} />{" "}
+          <Route path="/review-leaves" element={<ReviewLeaves />} />{" "}
         </Routes>
       </Router>
     </Box>

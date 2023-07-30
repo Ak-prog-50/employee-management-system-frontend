@@ -12,14 +12,13 @@ const ManagerSection: React.FC = () => {
         leftIcon={<VscRequestChanges />}
         variant="ghost"
         onClick={() => naviagate("/review-registrations")}
-        
       >
         Review Registration Requests
       </Button>
       <Button
         leftIcon={<MdOutlineRateReview />}
         variant="ghost"
-        
+        onClick={() => naviagate("/review-leaves")}
       >
         Review Leaves
       </Button>
