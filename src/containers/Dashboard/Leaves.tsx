@@ -25,22 +25,44 @@ import {
 } from "@chakra-ui/react";
 import { BACKEND_URL } from "../../config";
 
+interface LeaveDetails {
+  empId: number;
+  startDate: string;
+  endDate: string;
+  leaveType: string;
+}
+
 const LeaveForm = ({ isOpen, onClose }: any) => {
-  const requestLeave = async (leaveDetails: any) => {
+  const [leaveDetails, setLeaveDetails] = useState<LeaveDetails>({
+    empId: 0,
+    startDate: "",
+    endDate: "",
+    leaveType: "",
+  });
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = event.target;
+    setLeaveDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
+  };
+
+  const requestLeave = async (leaveDetails: LeaveDetails) => {
     try {
-      const response = await fetch("/leaves/request-leave", {
+      const response = await fetch(`${BACKEND_URL}/leaves/request-leave`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           leaveObj: {
             leaveId: null,
-            empId: leaveDetails.empId, // Use the empId from leaveDetails
-            startDate: leaveDetails.startDate, // Use the startDate from leaveDetails
-            endDate: leaveDetails.endDate, // Use the endDate from leaveDetails
+            empId: leaveDetails.empId,
+            startDate: leaveDetails.startDate,
+            endDate: leaveDetails.endDate,
             status: "pending",
-            leaveType: leaveDetails.leaveType, // Convert the leaveType string to enum value
+            leaveType: leaveDetails.leaveType,
           },
         }),
       });
@@ -70,20 +92,39 @@ const LeaveForm = ({ isOpen, onClose }: any) => {
         <ModalBody>
           <FormControl isRequired>
             <FormLabel>Type Of Leave</FormLabel>
-            <Select placeholder="Select Leave Type">
-              <option>Casual Leave</option>
-              <option>Sick Leave</option>
-              <option>Annual Leave</option>
-              <option>Duty Leave</option>
+            <Select
+              name="leaveType"
+              placeholder="Select Leave Type"
+              onChange={handleChange}
+              value={leaveDetails.leaveType}
+            >
+              <option value="casual">Casual Leave</option>
+              <option value="sick">Sick Leave</option>
+              <option value="annual">Annual Leave</option>
+              <option value="duty">Duty Leave</option>
             </Select>
           </FormControl>
           <FormControl isRequired>
             <FormLabel>From Date</FormLabel>
-            <Input placeholder="Select Date" size="md" type="date" />{" "}
+            <Input
+              name="startDate"
+              placeholder="Select Date"
+              size="md"
+              type="date"
+              onChange={handleChange}
+              value={leaveDetails.startDate}
+            />
           </FormControl>
           <FormControl isRequired>
             <FormLabel>To Date</FormLabel>
-            <Input placeholder="Select Date" size="md" type="date" />{" "}
+            <Input
+              name="endDate"
+              placeholder="Select Date"
+              size="md"
+              type="date"
+              onChange={handleChange}
+              value={leaveDetails.endDate}
+            />
           </FormControl>
         </ModalBody>
 
@@ -92,7 +133,7 @@ const LeaveForm = ({ isOpen, onClose }: any) => {
             <Button
               colorScheme="teal"
               variant="outline"
-              onClick={() => requestLeave(null)}
+              onClick={() => requestLeave(leaveDetails)}
             >
               Request
             </Button>
@@ -106,23 +147,28 @@ const LeaveForm = ({ isOpen, onClose }: any) => {
   );
 };
 
-interface Leave {
-  // Define the type for the leaves data
-  description: string;
-  entitledLeaves: number;
+interface UserLeaveData {
+  entitLeaves: number;
   takenLeaves: number;
-  balance: number;
+  casualLeavesBalance: number;
+  sickLeavesBalance: number;
+  annualLeavesBalance: number;
+  dutyLeavesBalance: number;
 }
 
 const Leaves = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [userLeaveData, setUserLeaveData] = useState<UserLeaveData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const user = localStorage.getItem("user");
+  const parsedUser = user ? JSON.parse(user) : null;
 
   useEffect(() => {
-    // Fetch leaves data from the server
-    fetch(`${BACKEND_URL}/leaves`, {
+    // Fetch user's leave data from the server
+    fetch(`${BACKEND_URL}/user/get-user/${parsedUser?.empId}`, {
       credentials: "include",
     })
       .then((response) => response.json())
@@ -130,13 +176,13 @@ const Leaves = () => {
         if (data.error) {
           setError(data.message);
         } else {
-          setLeaves(data.data);
+          setUserLeaveData(data.data);
         }
         setLoading(false);
       })
       .catch((error) => {
-        setError("An error occurred while fetching leaves data.");
-        console.error("Error while fetching leaves", error);
+        setError("An error occurred while fetching user's leave data.");
+        console.error("Error while fetching user's leave data", error);
         setLoading(false);
       });
   }, []);
@@ -149,6 +195,37 @@ const Leaves = () => {
     return <div>Error: {error}</div>;
   }
 
+  const leaves = [
+    {
+      id: 1,
+      description: "Casual Leaves",
+      entitledLeaves: userLeaveData?.entitLeaves || 0,
+      takenLeaves: userLeaveData?.takenLeaves || 0,
+      balance: userLeaveData?.casualLeavesBalance || 0,
+    },
+    {
+      id: 2,
+      description: "Sick Leaves",
+      entitledLeaves: userLeaveData?.entitLeaves || 0,
+      takenLeaves: userLeaveData?.takenLeaves || 0,
+      balance: userLeaveData?.sickLeavesBalance || 0,
+    },
+    {
+      id: 3,
+      description: "Annual Leaves",
+      entitledLeaves: userLeaveData?.entitLeaves || 0,
+      takenLeaves: userLeaveData?.takenLeaves || 0,
+      balance: userLeaveData?.annualLeavesBalance || 0,
+    },
+    {
+      id: 4,
+      description: "Duty Leaves",
+      entitledLeaves: userLeaveData?.entitLeaves || 0,
+      takenLeaves: userLeaveData?.takenLeaves || 0,
+      balance: userLeaveData?.dutyLeavesBalance || 0,
+    },
+  ];
+
   return (
     <>
       <Flex direction={"column"} width={"80%"} m={"auto"}>
@@ -156,7 +233,6 @@ const Leaves = () => {
           <Table variant="striped" colorScheme="teal">
             <Thead>
               <Tr>
-                {/* <Th>Leave Code</Th> */}
                 <Th>Leave Description</Th>
                 <Th isNumeric>Entitled Leaves</Th>
                 <Th isNumeric>Taken Leaves</Th>
@@ -164,8 +240,8 @@ const Leaves = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {leaves.map((leave, index) => (
-                <Tr key={index}>
+              {leaves.map((leave) => (
+                <Tr key={leave.id}>
                   <Td>{leave.description}</Td>
                   <Td isNumeric>{leave.entitledLeaves}</Td>
                   <Td isNumeric>{leave.takenLeaves}</Td>

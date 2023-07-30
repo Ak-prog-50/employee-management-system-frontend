@@ -48,7 +48,7 @@ const ReviewRegistrationReq: React.FC = () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          empIdOfCaller: parsedUser.empId + 4,
+          empIdOfCaller: parsedUser.empId,
           registrantDetails: regDetails,
         }),
       });
