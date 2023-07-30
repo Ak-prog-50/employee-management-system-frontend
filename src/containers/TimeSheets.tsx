@@ -9,8 +9,9 @@ import {
   Tr,
   Th,
   Td,
+  HStack,
 } from "@chakra-ui/react";
-import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
+import { AiOutlineArrowUp, AiOutlineArrowDown, AiOutlinePlus } from "react-icons/ai";
 import { BACKEND_URL } from "../config";
 import { toastAlertErr, toastAlertSuccess } from "../utils";
 
@@ -65,19 +66,67 @@ const TimeSheets: React.FC = () => {
     }
   };
 
+  const handleCreateTimesheet = async () => {
+    const user = localStorage.getItem("user");
+    const parsedUser = user ? JSON.parse(user) : null;
+
+    try {
+      // Prompt the user to enter the details for the new timesheet
+      const workedDate =
+        window.prompt("Enter the worked date (YYYY-MM-DD):") || "";
+      const hrs = window.prompt("Enter the hours worked:") || "";
+      const remarks = window.prompt("Enter remarks:") || "";
+      const collectedAmount =
+        window.prompt("Enter the collected amount:") || "";
+
+      // Prepare the request body
+      const requestBody = {
+        emp_id: parsedUser.empId, // Replace this with the actual emp_id from the user object in localStorage
+        worked_date: workedDate,
+        hrs: parseInt(hrs),
+        week: 0,
+        remarks,
+        collectedAmount: parseInt(collectedAmount),
+      };
+
+      const response = await fetch(`${BACKEND_URL}/timesheets`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(requestBody), // Convert the requestBody to JSON
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      // Fetch time sheets again to update the list
+      fetchTimeSheets();
+
+      toast(toastAlertSuccess("Timesheet created successfully."));
+    } catch (error: any) {
+      console.error("Error creating timesheet:", error);
+      toast(toastAlertErr(error?.message || "Failed to create timesheet."));
+    }
+  };
+
   const handleUpdate = async (timesheetId: number) => {
     const user = localStorage.getItem("user");
     const parsedUser = user ? JSON.parse(user) : null;
     const collectedAmount = window.prompt("Enter the collected amount:") || "";
     const remarks = window.prompt("Enter remarks:") || "";
-    const workedDate = window.prompt("Enter worked date:") || "";
+    const workedDate = window.prompt("Enter worked date (YYYY-MM-DD):") || "";
     const workedHrs = window.prompt("Enter worked hrs:") || "";
 
     const requestBody = {
       timesheet_id: timesheetId,
       emp_id: parsedUser.empId,
       week: 0,
-      worked_date: parseInt(workedDate),
+      worked_date: workedDate,
       hrs: parseInt(workedHrs),
       collectedAmount: parseInt(collectedAmount),
       remarks: remarks,
@@ -189,7 +238,7 @@ const TimeSheets: React.FC = () => {
           )}
         </Tbody>
       </Table>
-      <Box mt={4}>
+      <HStack mt={4} spacing={1}>
         <Button
           colorScheme="teal"
           variant="outline"
@@ -216,7 +265,16 @@ const TimeSheets: React.FC = () => {
         >
           Rejected
         </Button>
-      </Box>
+        <Button
+          colorScheme="orange"
+          variant="solid"
+          onClick={handleCreateTimesheet}
+          leftIcon={<AiOutlinePlus />}
+          ml={'auto'}
+        >
+          Create Timesheet
+        </Button>
+      </HStack>
     </Box>
   );
 };
