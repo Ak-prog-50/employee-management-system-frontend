@@ -5,6 +5,7 @@ import Dashboard from "./containers/Dashboard";
 import Leaves from "./containers/Leaves";
 import ReviewRegistrationReq from "./containers/ReviewRegistrationReq";
 import ReviewLeaves from "./containers/ReviewLeaves";
+import TimeSheets from "./containers/TimeSheets";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             element={<ReviewRegistrationReq />}
           />{" "}
           <Route path="/review-leaves" element={<ReviewLeaves />} />{" "}
+          <Route path="/timesheets" element={<TimeSheets />} />
         </Routes>
       </Router>
     </Box>

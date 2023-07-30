@@ -6,7 +6,7 @@ import {
   BiTimeFive,
   BiCalendarEvent,
   BiFileBlank,
-  BiCommentDetail,
+  // BiCommentDetail,
 } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
@@ -24,18 +24,34 @@ const CommonSection: React.FC = () => {
       >
         Leaves
       </Button>
-      <Button leftIcon={<BiTimeFive />} variant="ghost">
+      <Button
+        leftIcon={<BiTimeFive />}
+        variant="ghost"
+        onClick={() => navigate("/timesheets")}
+      >
         TimeSheets
       </Button>
-      <Button leftIcon={<BiCalendarEvent />} variant="ghost">
-        Schedule
+      <Button
+        leftIcon={<BiCalendarEvent />}
+        variant="ghost"
+        onClick={() => navigate("/schedules")}
+      >
+        Schedules
       </Button>
-      <Button leftIcon={<BiFileBlank />} variant="ghost">
+      <Button
+        leftIcon={<BiFileBlank />}
+        variant="ghost"
+        onClick={() => navigate("/reports")}
+      >
         Reports
       </Button>
-      <Button leftIcon={<BiCommentDetail />} variant="ghost">
+      {/* <Button
+        leftIcon={<BiCommentDetail />}
+        variant="ghost"
+        onClick={() => navigate("/feedback")}
+      >
         Feedback
-      </Button>
+      </Button> */}
 
       {/* Add the "Applying Leaves" functionality here */}
       {/* You can also add other common sections here */}
