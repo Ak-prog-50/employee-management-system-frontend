@@ -27,7 +27,7 @@ interface Leave {
 }
 
 const ReviewLeaves: React.FC = () => {
-  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [leaves, setLeaves] = useState<Leave[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -116,13 +116,13 @@ const ReviewLeaves: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (leaves.length === 0) {
+  if (leaves && leaves.length === 0) {
     return <div>No leaves found.</div>;
   }
 
   return (
     <Stack spacing="4">
-      {leaves.map((leave: Leave, index: number) => (
+      {leaves?.map((leave: Leave, index: number) => (
         <Card key={index} variant="elevated">
           <CardHeader>
             <Heading size="md">Leave Request #{leave.leaveId}</Heading>

@@ -34,6 +34,14 @@ const SignInContainer: React.FC = () => {
           dob: data.data.dob,
           appDate: data.data.appDate,
           role: data.data.role,
+          // entitLeaves: data.data.entitLeaves,
+          // takenLeaves: data.data.takenLeaves,
+          // leavesBalances: {
+          //   casual: data.data.casualLeavesBalance,
+          //   annual: data.data.annualLeavesBalance,
+          //   sick: data.data.sickLeavesBalance,
+          //   duty: data.data.dutyLeavesBalance,
+          // },
         };
 
         localStorage.setItem("user", JSON.stringify(user));

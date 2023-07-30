@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Table,
   Thead,
@@ -22,6 +23,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { BACKEND_URL } from "../../config";
 
 const LeaveForm = ({ isOpen, onClose }: any) => {
   const requestLeave = async (leaveDetails: any) => {
@@ -104,8 +106,48 @@ const LeaveForm = ({ isOpen, onClose }: any) => {
   );
 };
 
+interface Leave {
+  // Define the type for the leaves data
+  description: string;
+  entitledLeaves: number;
+  takenLeaves: number;
+  balance: number;
+}
+
 const Leaves = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch leaves data from the server
+    fetch(`${BACKEND_URL}/leaves`, {
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.message);
+        } else {
+          setLeaves(data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError("An error occurred while fetching leaves data.");
+        console.error("Error while fetching leaves", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
@@ -122,34 +164,14 @@ const Leaves = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                {/* <Td>CL</Td> */}
-                <Td>Casual Leaves</Td>
-                <Td isNumeric>30</Td>
-                <Td isNumeric>25.4</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
-              <Tr>
-                {/* <Td>CL</Td> */}
-                <Td>Casual Leaves</Td>
-                <Td isNumeric>30</Td>
-                <Td isNumeric>25.4</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
-              <Tr>
-                {/* <Td>CL</Td> */}
-                <Td>Casual Leaves</Td>
-                <Td isNumeric>30</Td>
-                <Td isNumeric>25.4</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
-              <Tr>
-                {/* <Td>CL</Td> */}
-                <Td>Casual Leaves</Td>
-                <Td isNumeric>30</Td>
-                <Td isNumeric>25.4</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
+              {leaves.map((leave, index) => (
+                <Tr key={index}>
+                  <Td>{leave.description}</Td>
+                  <Td isNumeric>{leave.entitledLeaves}</Td>
+                  <Td isNumeric>{leave.takenLeaves}</Td>
+                  <Td isNumeric>{leave.balance}</Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </TableContainer>
