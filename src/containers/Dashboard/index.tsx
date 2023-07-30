@@ -30,8 +30,10 @@ const Dashboard: React.FC = () => {
 
   const capitalizeAndRemoveSlash = (path: string) => {
     if (path && path.length > 1) {
-      const capitalizedPath = path.charAt(1).toUpperCase() + path.slice(2);
-      return capitalizedPath;
+      const words = path.split("-").map((word, i) => {
+        return word.charAt(i === 0 ? 1 : 0).toUpperCase() + word.slice(i === 0 ? 2 : 1);
+      });
+      return words.join(" ");
     } else {
       return "Micro Credit Investments";
     }

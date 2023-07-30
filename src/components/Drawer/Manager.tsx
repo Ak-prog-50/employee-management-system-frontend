@@ -11,7 +11,7 @@ const ManagerSection: React.FC = () => {
       <Button
         leftIcon={<VscRequestChanges />}
         variant="ghost"
-        onClick={() => naviagate("/Review Registrations")}
+        onClick={() => naviagate("/review-registrations")}
         
       >
         Review Registration Requests

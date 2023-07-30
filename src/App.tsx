@@ -13,7 +13,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/signIn" element={<SignInContainer />} />{" "}
           <Route path="/leaves" element={<Leaves />} />{" "}
-          <Route path="/Review Registrations" element={<ReviewRegistrationReq />} />{" "}
+          <Route path="/review-registrations" element={<ReviewRegistrationReq />} />{" "}
         </Routes>
       </Router>
     </Box>

@@ -17,6 +17,7 @@ const SignInContainer: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(loginDetails),
       });
 
@@ -71,6 +72,7 @@ const SignInContainer: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           empIdOfCaller: null,
           registrantDetails: regDetails,
@@ -80,7 +82,7 @@ const SignInContainer: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration Request Sent! Please wait for approval.")
+        alert("Registration Request Sent! Please wait for approval.");
       } else {
         // Registration failed, handle error cases
         alert(data.message);
@@ -89,7 +91,6 @@ const SignInContainer: React.FC = () => {
       console.error("Registration failed due to an error", error);
       alert("Registration failed");
     }
-    
   };
 
   return (
