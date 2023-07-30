@@ -22,9 +22,15 @@ interface ISideDrawerProps {
   userRole: "manager" | "hrPerson" | "employee";
   onClose: any;
   isOpen: boolean;
+  handleLogout: any;
 }
 
-const SideDrawer = ({ userRole, onClose, isOpen }: ISideDrawerProps) => {
+const SideDrawer = ({
+  userRole,
+  onClose,
+  isOpen,
+  handleLogout,
+}: ISideDrawerProps) => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -36,7 +42,7 @@ const SideDrawer = ({ userRole, onClose, isOpen }: ISideDrawerProps) => {
             "& button": {
               width: "full",
               textAlign: "left",
-              display: "block"
+              display: "block",
             },
           }}
         >
@@ -61,7 +67,11 @@ const SideDrawer = ({ userRole, onClose, isOpen }: ISideDrawerProps) => {
                 <Button leftIcon={<AiOutlineSetting />} variant="ghost">
                   Edit Profile
                 </Button>
-                <Button leftIcon={<AiOutlineLogout />} variant="ghost">
+                <Button
+                  leftIcon={<AiOutlineLogout />}
+                  variant="ghost"
+                  onClick={() => handleLogout()}
+                >
                   Log Out
                 </Button>
               </>
