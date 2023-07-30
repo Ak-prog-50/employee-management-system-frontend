@@ -23,7 +23,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { BACKEND_URL } from "../../config";
+import { BACKEND_URL } from "../config";
 
 interface LeaveDetails {
   empId: number;
