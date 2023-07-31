@@ -14,9 +14,9 @@ const CommonSection: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <Button leftIcon={<AiFillDashboard />} variant="ghost">
+      {/* <Button leftIcon={<AiFillDashboard />} variant="ghost">
         Dashboard
-      </Button>
+      </Button> */}
       <Button
         leftIcon={<BiCalendarCheck />}
         variant="ghost"

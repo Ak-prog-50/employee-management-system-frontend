@@ -64,9 +64,9 @@ const SideDrawer = ({
           <DrawerFooter mr={"auto"}>
             <VStack>
               <>
-                <Button leftIcon={<AiOutlineSetting />} variant="ghost">
+                {/* <Button leftIcon={<AiOutlineSetting />} variant="ghost">
                   Edit Profile
-                </Button>
+                </Button> */}
                 <Button
                   leftIcon={<AiOutlineLogout />}
                   variant="ghost"
