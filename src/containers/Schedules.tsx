@@ -10,11 +10,15 @@ import {
   Th,
   Td,
   HStack,
+  FormControl,
+  FormLabel,
+  Input,
 } from "@chakra-ui/react";
 import {
   AiOutlineArrowUp,
   AiOutlineArrowDown,
   AiOutlinePlus,
+  AiOutlineSearch,
 } from "react-icons/ai";
 import { BACKEND_URL } from "../config";
 import { toastAlertErr, toastAlertSuccess } from "../utils";
@@ -37,6 +41,34 @@ const Schedules: React.FC = () => {
   const [sorting, setSorting] = useState<string>(""); // Can be "pending", "approved", or "rejected"
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+
+  const [searchEmpId, setSearchEmpId] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [availability, setAvailability] = useState<boolean | null>(null);
+  const [showSearchBox, setShowSearchBox] = useState(false);
+
+  const handleCheckAvailability = async () => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/schedules/availability-check/${searchEmpId}/${selectedDate}`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      const data = await response.json();
+      setAvailability(data); // The API should return true or false
+    } catch (error: any) {
+      console.error("Error checking availability:", error);
+      setAvailability(null);
+      toast(toastAlertErr(error?.message || "Failed to check availability."));
+    }
+  };
 
   // Function to fetch schedules
   const fetchSchedules = async () => {
@@ -193,6 +225,54 @@ const Schedules: React.FC = () => {
 
   return (
     <Box p={4}>
+      <Box mb={4} width={'40%'}>
+        <Button
+          colorScheme="teal"
+          variant="link"
+          onClick={() => setShowSearchBox(!showSearchBox)}
+          mt={2}
+          leftIcon={<AiOutlineSearch />}
+        >
+          Search Employee Availability
+        </Button>
+        {showSearchBox && (
+          <FormControl mb={16}>
+            <FormLabel>Employee ID</FormLabel>
+            <Input
+              type="text"
+              placeholder="Employee ID"
+              value={searchEmpId}
+              onChange={(e) => setSearchEmpId(e.target.value)}
+              size={'sm'}
+            />
+            <FormLabel mt={2}>Select Date</FormLabel>
+            <Input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              size={'sm'}
+            />
+            <Button
+              colorScheme="teal"
+              variant="solid"
+              onClick={handleCheckAvailability}
+              mt={2}
+              leftIcon={<AiOutlineSearch />}
+              size={'sm'}
+            >
+              Check Availability
+            </Button>
+            {availability !== null && (
+              <Box mt={2} color={availability ? "green.500" : "red.500"}>
+                {availability
+                  ? "Employee is available on the selected date."
+                  : "Employee is not available on the selected date."}
+              </Box>
+            )}
+          </FormControl>
+        )}
+      </Box>
+
       <Table variant="striped" colorScheme="teal" size="sm">
         <Thead>
           <Tr>
@@ -277,7 +357,7 @@ const Schedules: React.FC = () => {
           onClick={handleCreateSchedule}
           leftIcon={<AiOutlinePlus />}
           ml={"auto"}
-          isDisabled={parsedUser?.role === "employee" }
+          isDisabled={parsedUser?.role === "employee"}
         >
           Create Schedule
         </Button>
