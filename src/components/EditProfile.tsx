@@ -104,7 +104,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
       <FormControl isRequired mt={4}>
         <FormLabel>Contact Number</FormLabel>
         <Input
-          type="tel"
+          type="number"
           value={userDetails.contactNo}
           onChange={(e) =>
             setUserDetails({ ...userDetails, contactNo: e.target.value })

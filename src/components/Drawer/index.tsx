@@ -78,13 +78,16 @@ const SideDrawer = ({
           <DrawerFooter mr={"auto"}>
             <VStack>
               <>
-                <Button
-                  leftIcon={<AiOutlineSetting />}
-                  variant="ghost"
-                  onClick={() => navigate("/edit-profile")}
-                >
-                  Edit Profile
-                </Button>
+                {userRole !== "employee" && (
+                  <Button
+                    leftIcon={<AiOutlineSetting />}
+                    variant="ghost"
+                    onClick={() => navigate("/edit-profile")}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+
                 <Button
                   leftIcon={<AiOutlineLogout />}
                   variant="ghost"

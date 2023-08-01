@@ -77,7 +77,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSubmit }) => {
     dob: "",
     email: "",
     designation: "",
-    appointedDate: "",
+    appDate: "",
   });
   const onSubmitFunc = isRegistering
     ? onSubmit.handleReg
@@ -157,6 +157,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSubmit }) => {
               <Input
                 placeholder="Contact Number"
                 value={regDetails.contactNo}
+                type="number"
                 onChange={(e) =>
                   setRegDetails((prevState) => ({
                     ...prevState,
@@ -170,6 +171,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSubmit }) => {
               <Input
                 placeholder="Date Of Birth"
                 value={regDetails.dob}
+                type="date"
                 onChange={(e) =>
                   setRegDetails((prevState) => ({
                     ...prevState,
@@ -221,11 +223,12 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSubmit }) => {
               <FormLabel>Appointed Date</FormLabel>
               <Input
                 placeholder="Appointed Date"
-                value={regDetails.appointedDate}
+                value={regDetails.appDate}
+                type="date"
                 onChange={(e) =>
                   setRegDetails((prevState) => ({
                     ...prevState,
-                    appointedDate: e.target.value,
+                    appDate: e.target.value,
                   }))
                 }
               />

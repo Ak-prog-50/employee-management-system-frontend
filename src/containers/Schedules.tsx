@@ -46,7 +46,7 @@ const Schedules: React.FC = () => {
   const [schedules, setSchedules] = useState<ISchedule[]>([]);
   const [sortedSchedules, setSortedSchedules] = useState<ISchedule[]>([]);
   const [sorting, setSorting] = useState<string>(""); // Can be "pending", "approved", or "rejected"
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledCollection, setScheduledCollection] = useState("");
@@ -91,6 +91,7 @@ const Schedules: React.FC = () => {
 
   // Function to fetch schedules
   const fetchSchedules = async () => {
+    setLoading(true);
     try {
       const user = localStorage.getItem("user");
       const parsedUser = user ? JSON.parse(user) : null;
@@ -242,10 +243,10 @@ const Schedules: React.FC = () => {
     sortSchedules();
   }, [sorting]);
 
-  // Fetch schedules when the component mounts
-  useEffect(() => {
-    fetchSchedules();
-  }, []);
+  // // Fetch schedules when the component mounts
+  // useEffect(() => {
+  //   fetchSchedules();
+  // }, []);
 
   // Function to handle sorting button click
   const handleSort = (type: string) => {
