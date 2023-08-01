@@ -64,7 +64,8 @@ const SignInContainer: React.FC = () => {
   };
 
   interface RegistrantDetails {
-    name: string;
+    firstName: string;
+    lastName: string;
     contactNo: string;
     email: string;
     designation: string;
@@ -75,7 +76,7 @@ const SignInContainer: React.FC = () => {
 
   const handleRegistration = async (regDetails: RegistrantDetails) => {
     try {
-      const response = await fetch("/user/create-user", {
+      const response = await fetch(`${BACKEND_URL}/user/create-user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +84,10 @@ const SignInContainer: React.FC = () => {
         credentials: "include",
         body: JSON.stringify({
           empIdOfCaller: null,
-          registrantDetails: regDetails,
+          registrantDetails: {
+            ...regDetails,
+            name: `${regDetails.firstName} ${regDetails.lastName}`,
+          },
         }),
       });
 
