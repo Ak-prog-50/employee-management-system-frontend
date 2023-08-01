@@ -67,7 +67,7 @@ const EditProfileContainer = () => {
             mr={2}
           />
           <Button colorScheme="teal" onClick={handleFetchUserData}>
-            Get Current User Data
+            Get User
           </Button>
         </Flex>
       </FormControl>

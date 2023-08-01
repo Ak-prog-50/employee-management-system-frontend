@@ -43,7 +43,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
 
   const handleUpdateUser = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/user-edit-user`, {
+      const response = await fetch(`${BACKEND_URL}/user/edit-user`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
