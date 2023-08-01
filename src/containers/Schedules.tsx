@@ -52,7 +52,8 @@ const Schedules: React.FC = () => {
   const [scheduledCollection, setScheduledCollection] = useState("");
   const [scheduledHrs, setScheduledHrs] = useState("");
   const [assignedCustomers, setAssignedCustomers] = useState("");
-  const [scheduledIdForUpdate , setScheduledIdForUpdate] = useState<number>();
+  const [scheduledIdForUpdate, setScheduledIdForUpdate] = useState<number>();
+  const [employeeIdSearched, setEmployeeIdSearched] = useState<number>();
 
   const toast = useToast();
 
@@ -97,8 +98,10 @@ const Schedules: React.FC = () => {
         throw new Error("User not logged in");
       }
 
+      const empIdToUse: number =
+        parsedUser.role === "hrPerson" ? searchEmpId : parsedUser.empId;
       const response = await fetch(
-        `${BACKEND_URL}/schedules/employee/${parsedUser.empId}`,
+        `${BACKEND_URL}/schedules/employee/${empIdToUse}`,
         {
           credentials: "include",
         }
@@ -130,7 +133,7 @@ const Schedules: React.FC = () => {
       );
       setScheduledHrs(scheduleToUpdate.scheduledHrs?.toString() || "");
       setAssignedCustomers(scheduleToUpdate.assignedCustomers || "");
-      setScheduledIdForUpdate(scheduleId)
+      setScheduledIdForUpdate(scheduleId);
       setIsModalOpen(true);
     }
   };
@@ -139,9 +142,11 @@ const Schedules: React.FC = () => {
     event.preventDefault();
     // ... (perform form validation if needed)
 
+    const empIdToUse: number =
+      parsedUser.role === "hrPerson" ? searchEmpId : parsedUser.empId;
     try {
       const requestBody = {
-        empId: parsedUser.empId,
+        empId: empIdToUse,
         scheduledDate,
         scheduledCollection: parseInt(scheduledCollection),
         scheduledHrs: parseInt(scheduledHrs),
@@ -182,10 +187,11 @@ const Schedules: React.FC = () => {
     event.preventDefault();
     // ... ( form validation if needed)
 
+    const empIdToUse: number = parsedUser.role === "hrPerson" ? searchEmpId : parsedUser.empId
     try {
       // Prepare the request body
       const requestBody = {
-        empId: parsedUser.empId,
+        empId: empIdToUse,
         scheduledDate,
         scheduledCollection: parseInt(scheduledCollection),
         scheduledHrs: parseInt(scheduledHrs),
@@ -255,6 +261,7 @@ const Schedules: React.FC = () => {
           onClick={() => setShowSearchBox(!showSearchBox)}
           mt={2}
           leftIcon={<AiOutlineSearch />}
+          isDisabled={parsedUser?.role === "employee"}
         >
           Search Employee Availability
         </Button>

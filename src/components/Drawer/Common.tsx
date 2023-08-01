@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "@chakra-ui/react";
-import { AiFillDashboard } from "react-icons/ai";
+// import { AiFillDashboard } from "react-icons/ai";
 import {
   BiCalendarCheck,
-  BiTimeFive,
+  // BiTimeFive,
   BiCalendarEvent,
   BiFileBlank,
   // BiCommentDetail,
@@ -24,13 +24,13 @@ const CommonSection: React.FC = () => {
       >
         Leaves
       </Button>
-      <Button
+      {/* <Button
         leftIcon={<BiTimeFive />}
         variant="ghost"
         onClick={() => navigate("/timesheets")}
       >
         TimeSheets
-      </Button>
+      </Button> */}
       <Button
         leftIcon={<BiCalendarEvent />}
         variant="ghost"

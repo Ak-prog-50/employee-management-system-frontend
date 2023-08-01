@@ -22,8 +22,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Heading,
+  Icon,
+  Text,
+  Box,
 } from "@chakra-ui/react";
 import { BACKEND_URL } from "../config";
+import { AiOutlineArrowUp } from "react-icons/ai";
 
 interface LeaveDetails {
   empId: number;
@@ -154,6 +159,9 @@ interface UserLeaveData {
   sickLeavesBalance: number;
   annualLeavesBalance: number;
   dutyLeavesBalance: number;
+  startDate: Date;
+  endDate: Date;
+  status: "pending" | "approved" | "rejected";
 }
 
 const Leaves = () => {
@@ -165,6 +173,7 @@ const Leaves = () => {
   const [error, setError] = useState<string | null>(null);
   const user = localStorage.getItem("user");
   const parsedUser = user ? JSON.parse(user) : null;
+  const [previousLeaves, setPreviousLeaves] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch user's leave data from the server
@@ -187,6 +196,22 @@ const Leaves = () => {
       });
   }, []);
 
+  useEffect(() => {
+    // Fetch previous leaves from the server
+    fetch(`${BACKEND_URL}/leaves`, {
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Your Leaves are fetched.") {
+          setPreviousLeaves(data.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error while fetching previous leaves:", error);
+      });
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -199,29 +224,29 @@ const Leaves = () => {
     {
       id: 1,
       description: "Casual Leaves",
-      entitledLeaves: userLeaveData?.entitLeaves || 0,
-      takenLeaves: userLeaveData?.takenLeaves || 0,
+      // entitledLeaves: userLeaveData?.entitLeaves || 0,
+      // takenLeaves: userLeaveData?.takenLeaves || 0,
       balance: userLeaveData?.casualLeavesBalance || 0,
     },
     {
       id: 2,
       description: "Sick Leaves",
-      entitledLeaves: userLeaveData?.entitLeaves || 0,
-      takenLeaves: userLeaveData?.takenLeaves || 0,
+      // entitledLeaves: userLeaveData?.entitLeaves || 0,
+      // takenLeaves: userLeaveData?.takenLeaves || 0,
       balance: userLeaveData?.sickLeavesBalance || 0,
     },
     {
       id: 3,
       description: "Annual Leaves",
-      entitledLeaves: userLeaveData?.entitLeaves || 0,
-      takenLeaves: userLeaveData?.takenLeaves || 0,
+      // entitledLeaves: userLeaveData?.entitLeaves || 0,
+      // takenLeaves: userLeaveData?.takenLeaves || 0,
       balance: userLeaveData?.annualLeavesBalance || 0,
     },
     {
       id: 4,
       description: "Duty Leaves",
-      entitledLeaves: userLeaveData?.entitLeaves || 0,
-      takenLeaves: userLeaveData?.takenLeaves || 0,
+      // entitledLeaves: userLeaveData?.entitLeaves || 0,
+      // takenLeaves: userLeaveData?.takenLeaves || 0,
       balance: userLeaveData?.dutyLeavesBalance || 0,
     },
   ];
@@ -229,13 +254,18 @@ const Leaves = () => {
   return (
     <>
       <Flex direction={"column"} width={"80%"} m={"auto"}>
+        {/* Display Entitled and Taken Leaves */}
+        <Box mb={4}>
+          <Text>Total Entitled Leaves: {userLeaveData?.entitLeaves}</Text>
+          <Text>Total Taken Leaves: {userLeaveData?.takenLeaves}</Text>
+        </Box>
         <TableContainer>
           <Table variant="striped" colorScheme="teal">
             <Thead>
               <Tr>
                 <Th>Leave Description</Th>
-                <Th isNumeric>Entitled Leaves</Th>
-                <Th isNumeric>Taken Leaves</Th>
+                {/* <Th isNumeric>Entitled Leaves</Th>
+                <Th isNumeric>Taken Leaves</Th> */}
                 <Th isNumeric>Balance</Th>
               </Tr>
             </Thead>
@@ -243,8 +273,8 @@ const Leaves = () => {
               {leaves.map((leave) => (
                 <Tr key={leave.id}>
                   <Td>{leave.description}</Td>
-                  <Td isNumeric>{leave.entitledLeaves}</Td>
-                  <Td isNumeric>{leave.takenLeaves}</Td>
+                  {/* <Td isNumeric>{leave.entitledLeaves}</Td>
+                  <Td isNumeric>{leave.takenLeaves}</Td> */}
                   <Td isNumeric>{leave.balance}</Td>
                 </Tr>
               ))}
@@ -261,6 +291,32 @@ const Leaves = () => {
         >
           Request Leave
         </Button>
+
+        {/* Table to display previous leaves */}
+        <Heading mt={4} mb={4} fontSize={"2xl"}>
+          <Icon as={AiOutlineArrowUp} mr={2} color={"teal.500"} /> Previous
+          Leaves
+        </Heading>
+        <TableContainer mt={4}>
+          <Table variant="striped" colorScheme="teal">
+            <Thead>
+              <Tr>
+                <Th>Start Date</Th>
+                <Th>End Date</Th>
+                <Th>Status</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {previousLeaves.map((leave) => (
+                <Tr key={leave.leaveId}>
+                  <Td>{new Date(leave.startDate).toLocaleDateString()}</Td>
+                  <Td>{new Date(leave.endDate).toLocaleDateString()}</Td>
+                  <Td>{leave.status}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </Flex>
       <LeaveForm isOpen={isOpen} onClose={onClose} />
     </>
