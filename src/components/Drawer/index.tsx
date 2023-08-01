@@ -36,7 +36,7 @@ const SideDrawer = ({
 }: ISideDrawerProps) => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <>
@@ -78,7 +78,11 @@ const SideDrawer = ({
           <DrawerFooter mr={"auto"}>
             <VStack>
               <>
-                <Button leftIcon={<AiOutlineSetting />} variant="ghost">
+                <Button
+                  leftIcon={<AiOutlineSetting />}
+                  variant="ghost"
+                  onClick={() => navigate("/edit-profile")}
+                >
                   Edit Profile
                 </Button>
                 <Button
