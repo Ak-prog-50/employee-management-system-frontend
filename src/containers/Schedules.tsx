@@ -13,6 +13,13 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import {
   AiOutlineArrowUp,
@@ -40,6 +47,13 @@ const Schedules: React.FC = () => {
   const [sortedSchedules, setSortedSchedules] = useState<ISchedule[]>([]);
   const [sorting, setSorting] = useState<string>(""); // Can be "pending", "approved", or "rejected"
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledCollection, setScheduledCollection] = useState("");
+  const [scheduledHrs, setScheduledHrs] = useState("");
+  const [assignedCustomers, setAssignedCustomers] = useState("");
+  const [scheduledIdForUpdate , setScheduledIdForUpdate] = useState<number>();
+
   const toast = useToast();
 
   const [searchEmpId, setSearchEmpId] = useState<string>("");
@@ -68,6 +82,10 @@ const Schedules: React.FC = () => {
       setAvailability(null);
       toast(toastAlertErr(error?.message || "Failed to check availability."));
     }
+  };
+
+  const handleCreateSchedule = () => {
+    setIsModalOpen(true);
   };
 
   // Function to fetch schedules
@@ -101,20 +119,70 @@ const Schedules: React.FC = () => {
     }
   };
 
-  const handleCreateSchedule = async () => {
-    const user = localStorage.getItem("user");
-    const parsedUser = user ? JSON.parse(user) : null;
+  const handleUpdate = (scheduleId: number) => {
+    const scheduleToUpdate = schedules.find(
+      (schedule) => schedule.scheduleId === scheduleId
+    );
+    if (scheduleToUpdate) {
+      setScheduledDate(scheduleToUpdate.scheduledDate);
+      setScheduledCollection(
+        scheduleToUpdate.scheduledCollection?.toString() || ""
+      );
+      setScheduledHrs(scheduleToUpdate.scheduledHrs?.toString() || "");
+      setAssignedCustomers(scheduleToUpdate.assignedCustomers || "");
+      setScheduledIdForUpdate(scheduleId)
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleSubmitUpdateSchedule = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // ... (perform form validation if needed)
 
     try {
-      // Prompt the user to enter the details for the new schedule
-      const scheduledDate =
-        window.prompt("Enter the scheduled date (YYYY-MM-DD):") || "";
-      const scheduledCollection =
-        window.prompt("Enter the scheduled collection:") || "";
-      const scheduledHrs = window.prompt("Enter the scheduled hours:") || "";
-      const assignedCustomers =
-        window.prompt("Enter the assigned customers:") || "";
+      const requestBody = {
+        empId: parsedUser.empId,
+        scheduledDate,
+        scheduledCollection: parseInt(scheduledCollection),
+        scheduledHrs: parseInt(scheduledHrs),
+        assignedCustomers,
+      };
 
+      // Replace `scheduleIdToUpdate` with the actual schedule ID to update
+      const response = await fetch(
+        `${BACKEND_URL}/schedules/${scheduledIdForUpdate}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      // Fetch schedules again to update the status
+      fetchSchedules();
+
+      toast(toastAlertSuccess("Schedule updated successfully."));
+      setIsModalOpen(false); // Close the modal after successful update
+    } catch (error: any) {
+      console.error("Error updating schedule:", error);
+      toast(toastAlertErr(error?.message || "Failed to update schedule."));
+    }
+  };
+
+  const handleSubmitCreateSchedule = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // ... ( form validation if needed)
+
+    try {
       // Prepare the request body
       const requestBody = {
         empId: parsedUser.empId,
@@ -130,7 +198,7 @@ const Schedules: React.FC = () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(requestBody), // Convert the requestBody to JSON
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
@@ -143,55 +211,10 @@ const Schedules: React.FC = () => {
       fetchSchedules();
 
       toast(toastAlertSuccess("Schedule created successfully."));
+      setIsModalOpen(false); // Close the modal after successful creation
     } catch (error: any) {
       console.error("Error creating schedule:", error);
       toast(toastAlertErr(error?.message || "Failed to create schedule."));
-    }
-  };
-
-  const handleUpdate = async (scheduleId: number) => {
-    // const user = localStorage.getItem("user");
-    // const parsedUser = user ? JSON.parse(user) : null;
-    const scheduledDate =
-      window.prompt("Enter the scheduled date (YYYY-MM-DD):") || "";
-    const scheduledCollection =
-      window.prompt("Enter the scheduled collection:") || "";
-    const scheduledHrs = window.prompt("Enter the scheduled hours:") || "";
-    const assignedCustomers =
-      window.prompt("Enter the assigned customers:") || "";
-
-    const requestBody = {
-      empId: parsedUser.empId,
-      scheduledDate,
-      scheduledCollection: parseInt(scheduledCollection),
-      scheduledHrs: parseInt(scheduledHrs),
-      assignedCustomers,
-      //   status: "pending",
-    };
-
-    try {
-      const response = await fetch(`${BACKEND_URL}/schedules/${scheduleId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(requestBody),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      // Fetch schedules again to update the status
-      fetchSchedules();
-
-      toast(toastAlertSuccess("Schedule updated successfully."));
-    } catch (error: any) {
-      console.error("Error updating schedule:", error);
-      toast(toastAlertErr(error?.message || "Failed to update schedule."));
     }
   };
 
@@ -225,7 +248,7 @@ const Schedules: React.FC = () => {
 
   return (
     <Box p={4}>
-      <Box mb={4} width={'40%'}>
+      <Box mb={4} width={"40%"}>
         <Button
           colorScheme="teal"
           variant="link"
@@ -243,14 +266,14 @@ const Schedules: React.FC = () => {
               placeholder="Employee ID"
               value={searchEmpId}
               onChange={(e) => setSearchEmpId(e.target.value)}
-              size={'sm'}
+              size={"sm"}
             />
             <FormLabel mt={2}>Select Date</FormLabel>
             <Input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              size={'sm'}
+              size={"sm"}
             />
             <Button
               colorScheme="teal"
@@ -258,7 +281,7 @@ const Schedules: React.FC = () => {
               onClick={handleCheckAvailability}
               mt={2}
               leftIcon={<AiOutlineSearch />}
-              size={'sm'}
+              size={"sm"}
             >
               Check Availability
             </Button>
@@ -362,6 +385,66 @@ const Schedules: React.FC = () => {
           Create Schedule
         </Button>
       </HStack>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {scheduledIdForUpdate ? "Update Schedule" : "Create Schedule"}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl mb={2}>
+              <FormLabel>Scheduled Date</FormLabel>
+              <Input
+                type="date"
+                value={scheduledDate}
+                onChange={(e) => setScheduledDate(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb={2}>
+              <FormLabel>Scheduled Collection</FormLabel>
+              <Input
+                type="number"
+                value={scheduledCollection}
+                onChange={(e) => setScheduledCollection(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb={2}>
+              <FormLabel>Scheduled Hours</FormLabel>
+              <Input
+                type="number"
+                value={scheduledHrs}
+                onChange={(e) => setScheduledHrs(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb={2}>
+              <FormLabel>Assigned Customers</FormLabel>
+              <Input
+                type="text"
+                value={assignedCustomers}
+                onChange={(e) => setAssignedCustomers(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="teal"
+              variant="solid"
+              onClick={
+                scheduledIdForUpdate
+                  ? handleSubmitUpdateSchedule
+                  : handleSubmitCreateSchedule
+              }
+            >
+              {scheduledIdForUpdate ? "Update" : "Create"}
+            </Button>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
